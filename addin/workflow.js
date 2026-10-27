@@ -1,3 +1,4 @@
+import { createCoordinatedTask } from "./coordination.js";
 import { config } from "./config.js";
 import { selectedMessageGraphId } from "./outlook.js";
 import { silentToken } from "./auth.js";
@@ -23,7 +24,7 @@ export async function runCapture(restId, deps = {}) {
     checkActive(); validateMessage(message);
     const list = await (deps.getDefaultList || getDefaultList)(token, ctx);
     checkActive(); requireId(list?.id, "Default list ID");
-    return await (deps.createTask || createExactlyOnceBestEffort)(token, list, message, ctx);
+    return await (deps.createTask || createCoordinatedTask)(token, list, message, ctx);
   } finally { clearTimeout(timer); controller.abort(); }
 }
 export function capture(deps = {}) {
